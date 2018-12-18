@@ -63,13 +63,14 @@ let zapataCoin = new Blockchain();
 zapataCoin.addBlock(new Block(1, Date(),{amount: 4}));
 zapataCoin.addBlock(new Block(2, Date(),{amount: 10} ));
 
+console.log(JSON.stringify(zapataCoin, null, 4));
 console.log('is blockchain valid? ' + zapataCoin.isChainValid());
 
 zapataCoin.chain[1].data = {amaount: 20};
 zapataCoin.chain[1].hash = zapataCoin.chain[1].calculateHash();
 
 console.log('is blockchain valid? ' + zapataCoin.isChainValid());
-// console.log(JSON.stringify(zapataCoin, null, 4));
+
 
 
 
