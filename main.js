@@ -10,20 +10,29 @@ class Block{
         this.data = data;
         this.previousHash = previousHash;
         this.hash = this.calculateHash();
+        this.nonce = 0;
     }
 
     calculateHash(){
-        return crypto.createHash('sha256').update(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data)).digest('base64');
+        return crypto.createHash('sha256').update(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).digest('base64');
     }
 
-    mineBlock(){}
+    mineBlock(difficulty){
+        while(this.hash.substring(0, difficulty) !== Array(difficulty + 1).join('3')){
+            this.nonce++;
+            this.hash = this.calculateHash();
+        }
+        console.log(this.nonce);
+        console.log("Block mined: " + this.hash)
+    }
 }
 
 
 
 class Blockchain{
     constructor(){
-        this.chain = [this.createGenesisBlock()]
+        this.chain = [this.createGenesisBlock()];
+        this.diffculty = 3;
     }
 
     createGenesisBlock(){
@@ -36,7 +45,7 @@ class Blockchain{
 
     addBlock(newBlock){
         newBlock.previousHash = this.getLatestBlock().hash;
-        newBlock.hash = newBlock.calculateHash();
+        newBlock.mineBlock(this.diffculty);
         this.chain.push(newBlock);
 
     }
@@ -60,16 +69,19 @@ class Blockchain{
 }
 
 let zapataCoin = new Blockchain();
+
+console.log('Mining block 1..');
 zapataCoin.addBlock(new Block(1, Date(),{amount: 4}));
+console.log('Mining block 2..');
 zapataCoin.addBlock(new Block(2, Date(),{amount: 10} ));
 
-console.log(JSON.stringify(zapataCoin, null, 4));
-console.log('is blockchain valid? ' + zapataCoin.isChainValid());
-
-zapataCoin.chain[1].data = {amaount: 20};
-zapataCoin.chain[1].hash = zapataCoin.chain[1].calculateHash();
-
-console.log('is blockchain valid? ' + zapataCoin.isChainValid());
+// console.log(JSON.stringify(zapataCoin, null, 4));
+// console.log('is blockchain valid? ' + zapataCoin.isChainValid());
+//
+// zapataCoin.chain[1].data = {amaount: 20};
+// zapataCoin.chain[1].hash = zapataCoin.chain[1].calculateHash();
+//
+// console.log('is blockchain valid? ' + zapataCoin.isChainValid());
 
 
 
